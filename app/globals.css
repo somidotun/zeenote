@@ -61,42 +61,42 @@
   --color-warning:          #f97316;   /* orange */
   --color-success:          #22c55e;   /* green */
 
-  /* --- Background Layers --- */
-  --bg-base:                #1f2640;   /* deep navy base */
-  --bg-surface:             #2A3356;   /* navy surface */
-  --bg-elevated:            #343f6a;   /* lighter navy */
-  --bg-overlay:             #3f4c80;   /* overlay navy */
-  --bg-input:               #212844;   /* input background */
-  --bg-hover:               #343f6a;   /* hover navy */
+  /* --- Background Layers (Light Theme by Default) --- */
+  --bg-base:                #FDFCFC;   /* white/cornsilk base */
+  --bg-surface:             #ffffff;   /* white surface */
+  --bg-elevated:            #E8E2E2;   /* grey elevated */
+  --bg-overlay:             #d1caca;   /* overlay grey */
+  --bg-input:               #FDFCFC;   /* input background */
+  --bg-hover:               #E8E2E2;   /* hover grey */
 
   /* --- Text Colors --- */
-  --text-primary:           #FDFCFC;   /* white */
-  --text-secondary:         #E8E2E2;   /* grey */
-  --text-tertiary:          #b0b4c8;   /* muted text */
-  --text-inverse:           #2A3356;   /* navy on light */
+  --text-primary:           #2A3356;   /* navy */
+  --text-secondary:         #43528a;   /* muted navy */
+  --text-tertiary:          #64709b;   /* tertiary navy */
+  --text-inverse:           #FDFCFC;   /* white */
   --text-accent:            #F35B25;   /* orange */
 
   /* --- Border Colors --- */
-  --border-default:         #343f6a;   /* border navy */
-  --border-subtle:          #2A3356;   /* subtle navy */
-  --border-strong:          #3f4c80;   /* strong navy */
+  --border-default:         #E8E2E2;   /* border grey */
+  --border-subtle:          #FDFCFC;   /* subtle white */
+  --border-strong:          #d1caca;   /* strong grey */
   --border-accent:          #F35B25;   /* orange */
   --border-danger:          #ef4444;   /* error borders */
 
   /* --- Condition Group Colors --- */
-  --group-and-bg:           rgba(232, 226, 226, 0.06);
-  --group-and-border:       rgba(232, 226, 226, 0.35);
-  --group-and-label:        #E8E2E2;
-  --group-or-bg:            rgba(243, 91, 37, 0.06);
-  --group-or-border:        rgba(243, 91, 37, 0.35);
+  --group-and-bg:           rgba(42, 51, 86, 0.04);
+  --group-and-border:       rgba(42, 51, 86, 0.2);
+  --group-and-label:        #2A3356;
+  --group-or-bg:            rgba(243, 91, 37, 0.04);
+  --group-or-border:       rgba(243, 91, 37, 0.2);
   --group-or-label:         #F35B25;
 
   /* --- Nesting Depth Colors (indent lines) --- */
-  --depth-0:                #F35B25;
-  --depth-1:                #E8E2E2;
-  --depth-2:                #FDFCFC;
-  --depth-3:                #F35B25;
-  --depth-4:                #E8E2E2;
+  --depth-0:                #2A3356;
+  --depth-1:                #F35B25;
+  --depth-2:                #E8E2E2;
+  --depth-3:                #2A3356;
+  --depth-4:                #F35B25;
 
   /* --- Spacing & Sizing --- */
   --radius-sm:              4px;
@@ -109,11 +109,11 @@
   --indent-size:            20px;   /* nesting indent per level */
 
   /* --- Shadows --- */
-  --shadow-sm:              0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md:              0 4px 12px rgba(0,0,0,0.5);
-  --shadow-lg:              0 8px 24px rgba(0,0,0,0.6);
-  --shadow-glow:            0 0 20px rgba(243, 91, 37, 0.2);
-  --shadow-glow-success:    0 0 20px rgba(232, 226, 226, 0.2);
+  --shadow-sm:              0 1px 3px rgba(42,51,86,0.1);
+  --shadow-md:              0 4px 12px rgba(42,51,86,0.12);
+  --shadow-lg:              0 8px 24px rgba(42,51,86,0.15);
+  --shadow-glow:            0 0 20px rgba(243, 91, 37, 0.15);
+  --shadow-glow-success:    0 0 20px rgba(42, 51, 86, 0.15);
 
   /* --- Transitions --- */
   --transition-fast:        150ms ease;
@@ -126,24 +126,37 @@
   --font-display:           'Aspekta', system-ui, sans-serif;
 }
 
-/* Light Mode Override — uncomment to use light theme */
-/*
-:root {
-  --bg-base:        #f8fafc;
-  --bg-surface:     #ffffff;
-  --bg-elevated:    #f1f5f9;
-  --bg-overlay:     #e2e8f0;
-  --bg-input:       #f8fafc;
-  --bg-hover:       #e2e8f0;
-  --text-primary:   #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary:  #94a3b8;
-  --text-inverse:   #f8fafc;
-  --border-default: #e2e8f0;
-  --border-subtle:  #f1f5f9;
-  --border-strong:  #cbd5e1;
+/* Dark Mode Overrides */
+[data-theme='dark'] {
+  --bg-base:                #1f2640;   /* deep navy base */
+  --bg-surface:             #2A3356;   /* navy surface */
+  --bg-elevated:            #343f6a;   /* lighter navy */
+  --bg-overlay:             #3f4c80;   /* overlay navy */
+  --bg-input:               #212844;   /* input background */
+  --bg-hover:               #343f6a;   /* hover navy */
+
+  --text-primary:           #FDFCFC;   /* white */
+  --text-secondary:         #E8E2E2;   /* grey */
+  --text-tertiary:          #b0b4c8;   /* muted text */
+  --text-inverse:           #2A3356;   /* navy on light */
+
+  --border-default:         #343f6a;   /* border navy */
+  --border-subtle:          #2A3356;   /* subtle navy */
+  --border-strong:          #3f4c80;   /* strong navy */
+
+  --group-and-bg:           rgba(232, 226, 226, 0.06);
+  --group-and-border:       rgba(232, 226, 226, 0.35);
+  --group-and-label:        #E8E2E2;
+  --group-or-bg:            rgba(243, 91, 37, 0.06);
+  --group-or-border:        rgba(243, 91, 37, 0.35);
+  --group-or-label:         #F35B25;
+
+  --depth-0:                #F35B25;
+  --depth-1:                #E8E2E2;
+  --depth-2:                #FDFCFC;
+  --depth-3:                #F35B25;
+  --depth-4:                #E8E2E2;
 }
-*/
 
 * {
   box-sizing: border-box;
