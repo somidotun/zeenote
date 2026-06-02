@@ -110,7 +110,7 @@ export function ResultsPanel() {
           className="flex items-center gap-2 px-4 py-1.5 rounded-[var(--radius-md)] text-sm font-semibold transition-all"
           style={{
             background: isRunning ? 'var(--bg-elevated)' : 'var(--color-primary)',
-            color: isRunning ? 'var(--text-tertiary)' : 'white',
+            color: isRunning ? 'var(--text-tertiary)' : 'var(--text-inverse)',
             cursor: isRunning ? 'not-allowed' : 'pointer',
           }}
         >

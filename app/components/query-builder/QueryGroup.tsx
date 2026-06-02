@@ -1,5 +1,5 @@
 'use client';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useId, useState, useEffect } from 'react';
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor,
   useSensor, useSensors, DragEndEvent,
@@ -25,6 +25,13 @@ const DEPTH_COLORS = ['var(--depth-0)', 'var(--depth-1)', 'var(--depth-2)', 'var
 export const QueryGroupComponent = memo(function QueryGroupComponent({
   group, fields, depth = 0, isRoot = false, validationErrors = [],
 }: Props) {
+  const reactId = useId();
+  const [mountedId] = useState(() => crypto.randomUUID());
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => setIsClient(true), []);
+
+  const stableDndId = group.id ?? (isClient ? mountedId : reactId);
+
   const {
     addRule, addGroup, removeNode,
     updateGroupLogic, toggleGroupCollapse, reorderChildren,
@@ -109,7 +116,7 @@ export const QueryGroupComponent = memo(function QueryGroupComponent({
                 className="px-2.5 py-0.5 rounded text-xs font-bold transition-all duration-150"
                 style={{
                   background: group.logic === op ? logicColor : 'transparent',
-                  color: group.logic === op ? '#000' : 'var(--text-secondary)',
+                  color: group.logic === op ? 'var(--text-inverse)' : 'var(--text-secondary)',
                   fontFamily: 'var(--font-mono)',
                 }}
                 aria-pressed={group.logic === op}
@@ -195,7 +202,7 @@ export const QueryGroupComponent = memo(function QueryGroupComponent({
                 </button>
               </div>
             ) : (
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <DndContext id={stableDndId} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext
                   items={group.children.map(c => c.id)}
                   strategy={verticalListSortingStrategy}

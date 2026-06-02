@@ -36,7 +36,7 @@ describe('QueryRuleComponent', () => {
     render(<QueryRuleComponent rule={rule} fields={fields} depth={0} />);
     
     expect(screen.getByDisplayValue('Age')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('>')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('greater than')).toBeInTheDocument();
     expect(screen.getByDisplayValue('18')).toBeInTheDocument();
   });
 
