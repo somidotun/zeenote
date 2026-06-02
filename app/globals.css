@@ -52,51 +52,51 @@
 
 :root {
   /* --- Brand Colors --- */
-  --color-primary:          #F35B25;   /* orange */
-  --color-primary-light:    #f68b66;   /* lighter orange */
-  --color-primary-dark:     #d9420d;   /* darker orange */
-  --color-secondary:        #2A3356;   /* navy */
-  --color-tertiary:         #E8E2E2;   /* grey */
-  --color-danger:           #ef4444;   /* red */
-  --color-warning:          #f97316;   /* orange */
-  --color-success:          #22c55e;   /* green */
+  --color-primary:          #FF5722;   /* redesign primary orange */
+  --color-primary-light:    #FF784E;   /* lighter orange */
+  --color-primary-dark:     #E64A19;   /* darker orange */
+  --color-secondary:        #2F3A57;   /* redesign secondary slate/navy */
+  --color-tertiary:         #00B8D4;   /* high-contrast cyan for light mode */
+  --color-danger:           #EF4444;   /* red */
+  --color-warning:          #F97316;   /* orange warning */
+  --color-success:          #10B981;   /* green success */
 
-  /* --- Background Layers (Light Theme by Default) --- */
-  --bg-base:                #FDFCFC;   /* white/cornsilk base */
-  --bg-surface:             #ffffff;   /* white surface */
-  --bg-elevated:            #E8E2E2;   /* grey elevated */
-  --bg-overlay:             #d1caca;   /* overlay grey */
-  --bg-input:               #FDFCFC;   /* input background */
-  --bg-hover:               #E8E2E2;   /* hover grey */
+  /* --- Background Layers (Light Theme) --- */
+  --bg-base:                #F8FAFC;   
+  --bg-surface:             #FFFFFF;   
+  --bg-elevated:            #F1F5F9;   
+  --bg-overlay:             #E2E8F0;   
+  --bg-input:               #F8FAFC;   
+  --bg-hover:               #E2E8F0;   
 
   /* --- Text Colors --- */
-  --text-primary:           #2A3356;   /* navy */
-  --text-secondary:         #43528a;   /* muted navy */
-  --text-tertiary:          #64709b;   /* tertiary navy */
-  --text-inverse:           #FDFCFC;   /* white */
-  --text-accent:            #F35B25;   /* orange */
+  --text-primary:           #1A1F28;   /* redesign neutral as main text */
+  --text-secondary:         #475569;   
+  --text-tertiary:          #64748B;   
+  --text-inverse:           #FFFFFF;   
+  --text-accent:            #FF5722;   
 
   /* --- Border Colors --- */
-  --border-default:         #E8E2E2;   /* border grey */
-  --border-subtle:          #FDFCFC;   /* subtle white */
-  --border-strong:          #d1caca;   /* strong grey */
-  --border-accent:          #F35B25;   /* orange */
-  --border-danger:          #ef4444;   /* error borders */
+  --border-default:         #E2E8F0;   
+  --border-subtle:          #F1F5F9;   
+  --border-strong:          #CBD5E1;   
+  --border-accent:          #FF5722;   
+  --border-danger:          #EF4444;   
 
   /* --- Condition Group Colors --- */
-  --group-and-bg:           rgba(42, 51, 86, 0.04);
-  --group-and-border:       rgba(42, 51, 86, 0.2);
-  --group-and-label:        #2A3356;
-  --group-or-bg:            rgba(243, 91, 37, 0.04);
-  --group-or-border:       rgba(243, 91, 37, 0.2);
-  --group-or-label:         #F35B25;
+  --group-and-bg:           rgba(47, 58, 87, 0.04);
+  --group-and-border:       rgba(47, 58, 87, 0.25);
+  --group-and-label:        #2F3A57;
+  --group-or-bg:            rgba(255, 87, 34, 0.04);
+  --group-or-border:       rgba(255, 87, 34, 0.25);
+  --group-or-label:         #FF5722;
 
   /* --- Nesting Depth Colors (indent lines) --- */
-  --depth-0:                #2A3356;
-  --depth-1:                #F35B25;
-  --depth-2:                #E8E2E2;
-  --depth-3:                #2A3356;
-  --depth-4:                #F35B25;
+  --depth-0:                #2F3A57;
+  --depth-1:                #FF5722;
+  --depth-2:                #00B8D4;
+  --depth-3:                #2F3A57;
+  --depth-4:                #FF5722;
 
   /* --- Spacing & Sizing --- */
   --radius-sm:              4px;
@@ -104,16 +104,16 @@
   --radius-lg:              12px;
   --radius-xl:              16px;
   --radius-full:            9999px;
-  --spacing-rule:           12px;   /* gap between rules */
-  --spacing-group:          16px;   /* gap between groups */
-  --indent-size:            20px;   /* nesting indent per level */
+  --spacing-rule:           12px;   
+  --spacing-group:          16px;   
+  --indent-size:            20px;   
 
   /* --- Shadows --- */
-  --shadow-sm:              0 1px 3px rgba(42,51,86,0.1);
-  --shadow-md:              0 4px 12px rgba(42,51,86,0.12);
-  --shadow-lg:              0 8px 24px rgba(42,51,86,0.15);
-  --shadow-glow:            0 0 20px rgba(243, 91, 37, 0.15);
-  --shadow-glow-success:    0 0 20px rgba(42, 51, 86, 0.15);
+  --shadow-sm:              0 1px 3px rgba(26,31,40,0.1);
+  --shadow-md:              0 4px 12px rgba(26,31,40,0.08);
+  --shadow-lg:              0 8px 24px rgba(26,31,40,0.1);
+  --shadow-glow:            0 0 20px rgba(255, 87, 34, 0.15);
+  --shadow-glow-success:    0 0 20px rgba(0, 229, 255, 0.15);
 
   /* --- Transitions --- */
   --transition-fast:        150ms ease;
@@ -128,34 +128,44 @@
 
 /* Dark Mode Overrides */
 [data-theme='dark'] {
-  --bg-base:                #1f2640;   /* deep navy base */
-  --bg-surface:             #2A3356;   /* navy surface */
-  --bg-elevated:            #343f6a;   /* lighter navy */
-  --bg-overlay:             #3f4c80;   /* overlay navy */
-  --bg-input:               #212844;   /* input background */
-  --bg-hover:               #343f6a;   /* hover navy */
+  /* --- Brand Colors Overrides --- */
+  --color-tertiary:         #00E5FF;   /* redesign tertiary cyan */
 
-  --text-primary:           #FDFCFC;   /* white */
-  --text-secondary:         #E8E2E2;   /* grey */
-  --text-tertiary:          #b0b4c8;   /* muted text */
-  --text-inverse:           #2A3356;   /* navy on light */
+  /* --- Background Layers (Dark Theme) --- */
+  --bg-base:                #1A1F28;   /* redesign neutral background */
+  --bg-surface:             #202633;   
+  --bg-elevated:            #2B3345;   
+  --bg-overlay:             #364157;   
+  --bg-input:               #141820;   
+  --bg-hover:               #2F3A57;   
 
-  --border-default:         #343f6a;   /* border navy */
-  --border-subtle:          #2A3356;   /* subtle navy */
-  --border-strong:          #3f4c80;   /* strong navy */
+  /* --- Text Colors --- */
+  --text-primary:           #F3F4F6;   
+  --text-secondary:         #9CA3AF;   
+  --text-tertiary:          #6B7280;   
+  --text-inverse:           #1A1F28;   
 
-  --group-and-bg:           rgba(232, 226, 226, 0.06);
-  --group-and-border:       rgba(232, 226, 226, 0.35);
-  --group-and-label:        #E8E2E2;
-  --group-or-bg:            rgba(243, 91, 37, 0.06);
-  --group-or-border:        rgba(243, 91, 37, 0.35);
-  --group-or-label:         #F35B25;
+  /* --- Border Colors --- */
+  --border-default:         #2B3345;   
+  --border-subtle:          #202633;   
+  --border-strong:          #364157;   
+  --border-accent:          #FF5722;   
+  --border-danger:          #EF4444;   
 
-  --depth-0:                #F35B25;
-  --depth-1:                #E8E2E2;
-  --depth-2:                #FDFCFC;
-  --depth-3:                #F35B25;
-  --depth-4:                #E8E2E2;
+  /* --- Condition Group Colors --- */
+  --group-and-bg:           rgba(0, 229, 255, 0.03);
+  --group-and-border:       rgba(0, 229, 255, 0.25);
+  --group-and-label:        #00E5FF;
+  --group-or-bg:            rgba(255, 87, 34, 0.03);
+  --group-or-border:       rgba(255, 87, 34, 0.25);
+  --group-or-label:         #FF5722;
+
+  /* --- Nesting Depth Colors (indent lines) --- */
+  --depth-0:                #FF5722;
+  --depth-1:                #2F3A57;
+  --depth-2:                #00E5FF;
+  --depth-3:                #FF5722;
+  --depth-4:                #2F3A57;
 }
 
 * {

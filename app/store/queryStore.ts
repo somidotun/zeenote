@@ -155,7 +155,7 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
   root: INITIAL_ROOT,
   activeSchemaId: INITIAL_SCHEMA,
   previewMode: 'sql',
-  theme: 'light',
+  theme: 'dark',
   history: [{ root: deepClone(INITIAL_ROOT), schemaId: INITIAL_SCHEMA, timestamp: Date.now(), label: 'Initial' }],
   historyIndex: 0,
   savedQueries: [],
@@ -355,21 +355,25 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
   },
 
   importQuery: (json) => {
+    let parsed: { root?: unknown; schemaId?: unknown };
     try {
-      const parsed = JSON.parse(json);
-      if (parsed.root && parsed.schemaId) {
-        set(state => {
-          const history = state.history.slice(0, state.historyIndex + 1);
-          return {
-            root: parsed.root,
-            activeSchemaId: parsed.schemaId,
-            history: [...history, { root: deepClone(parsed.root), schemaId: parsed.schemaId, timestamp: Date.now(), label: 'Import' }],
-            historyIndex: history.length,
-          };
-        });
-      }
+      parsed = JSON.parse(json);
     } catch {
-      throw new Error('Invalid query JSON');
+      throw new Error('File is not valid JSON.');
     }
+    if (!parsed.root || !parsed.schemaId) {
+      throw new Error(
+        'JSON must have a "root" and "schemaId" field. Export a query first to get the correct format.'
+      );
+    }
+    set(state => {
+      const history = state.history.slice(0, state.historyIndex + 1);
+      return {
+        root: parsed.root as QueryGroup,
+        activeSchemaId: parsed.schemaId as string,
+        history: [...history, { root: deepClone(parsed.root as QueryGroup), schemaId: parsed.schemaId as string, timestamp: Date.now(), label: 'Import' }],
+        historyIndex: history.length,
+      };
+    });
   },
 }));

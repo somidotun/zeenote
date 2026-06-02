@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useQueryStore } from '../../store/queryStore';
 import { useShallow } from 'zustand/shallow';
 import { SCHEMAS } from '../../lib/schemas';
@@ -11,7 +11,6 @@ export function Toolbar() {
     resetQuery,
     savedQueries, saveQuery, loadSavedQuery, deleteSavedQuery,
     root,
-    importQuery,
     theme, toggleTheme,
   } = useQueryStore(
     useShallow(s => ({
@@ -26,7 +25,6 @@ export function Toolbar() {
       loadSavedQuery: s.loadSavedQuery,
       deleteSavedQuery: s.deleteSavedQuery,
       root: s.root,
-      importQuery: s.importQuery,
       theme: s.theme,
       toggleTheme: s.toggleTheme,
     }))
@@ -36,8 +34,6 @@ export function Toolbar() {
   const [showHistory, setShowHistory] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [showSaveInput, setShowSaveInput] = useState(false);
-  const [importError, setImportError] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSave = () => {
     if (!saveName.trim()) return;
@@ -57,29 +53,12 @@ export function Toolbar() {
     URL.revokeObjectURL(url);
   };
 
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        importQuery(ev.target?.result as string);
-        setImportError('');
-      } catch {
-        setImportError('Invalid JSON file');
-        setTimeout(() => setImportError(''), 3000);
-      }
-    };
-    reader.readAsText(file);
-    if (fileRef.current) fileRef.current.value = '';
-  };
-
   const btnClass = `
     flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius-md)] text-xs font-medium
     border transition-all duration-150
   `;
   const btnDefault = `${btnClass} bg-[var(--bg-elevated)] border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]`;
-  const btnPrimary = `${btnClass} bg-[var(--color-primary)] border-[var(--color-primary-dark)] text-white hover:bg-[var(--color-primary-dark)]`;
+  const btnPrimary = `${btnClass} bg-[var(--color-primary)] border-[var(--color-primary-dark)] text-[var(--text-inverse)] hover:bg-[var(--color-primary-dark)]`;
 
   return (
     <div
@@ -204,7 +183,7 @@ export function Toolbar() {
                     placeholder="Query name..."
                     className="flex-1 text-xs px-2 py-1 rounded bg-[var(--bg-input)] border border-[var(--border-default)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
-                  <button onClick={handleSave} className="px-2 py-1 text-xs rounded bg-[var(--color-primary)] text-white">Save</button>
+                  <button onClick={handleSave} className="px-2 py-1 text-xs rounded bg-[var(--color-primary)] text-[var(--text-inverse)]">Save</button>
                   <button onClick={() => setShowSaveInput(false)} className="px-2 py-1 text-xs rounded bg-[var(--bg-elevated)] text-[var(--text-secondary)]">✕</button>
                 </div>
               ) : (
@@ -256,18 +235,7 @@ export function Toolbar() {
         Export
       </button>
 
-      {/* Import */}
-      <button onClick={() => fileRef.current?.click()} className={btnDefault} title="Import query from JSON">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M6 8V1M3 4l3-3 3 3M1 10h10" strokeLinecap="round"/>
-        </svg>
-        Import
-      </button>
-      <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
 
-      {importError && (
-        <span className="text-xs text-[var(--color-danger)]">{importError}</span>
-      )}
 
       <div className="flex-1" />
 
