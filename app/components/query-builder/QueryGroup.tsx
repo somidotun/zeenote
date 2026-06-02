@@ -53,13 +53,17 @@ export const QueryGroupComponent = memo(function QueryGroupComponent({
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    if (!over || active.id === over.id || !group?.children) return;
     const oldIndex = group.children.findIndex(c => c.id === active.id);
     const newIndex = group.children.findIndex(c => c.id === over.id);
     if (oldIndex !== -1 && newIndex !== -1) {
       reorderChildren(group.id, oldIndex, newIndex);
     }
-  }, [group.children, group.id, reorderChildren]);
+  }, [group?.children, group?.id, reorderChildren]);
+
+  if (!group || group.type !== 'group' || !group.children) {
+    return null;
+  }
 
   const depthColor = DEPTH_COLORS[Math.min(depth, DEPTH_COLORS.length - 1)];
   const isAnd = group.logic === 'AND';
@@ -135,7 +139,7 @@ export const QueryGroupComponent = memo(function QueryGroupComponent({
           </span>
 
           {/* Condition count */}
-          {group.collapsed && (
+          {group.collapsed && group.children && (
             <span className="text-xs text-[var(--text-tertiary)]">
               {group.children.length} condition{group.children.length !== 1 ? 's' : ''}
             </span>
@@ -191,7 +195,7 @@ export const QueryGroupComponent = memo(function QueryGroupComponent({
         {/* Children */}
         {!group.collapsed && (
           <div className="p-2 flex flex-col gap-1.5">
-            {group.children.length === 0 ? (
+            {!group.children || group.children.length === 0 ? (
               <div className="py-4 text-center text-sm text-[var(--text-tertiary)] italic">
                 No conditions yet.{' '}
                 <button
@@ -204,11 +208,11 @@ export const QueryGroupComponent = memo(function QueryGroupComponent({
             ) : (
               <DndContext id={stableDndId} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext
-                  items={group.children.map(c => c.id)}
+                  items={(group.children || []).map(c => c.id)}
                   strategy={verticalListSortingStrategy}
                 >
                   <div suppressHydrationWarning>
-                  {group.children.map((child, index) => {
+                  {(group.children || []).map((child, index) => {
                     const childError = validationErrors.some(e => e.nodeId === child.id);
 
                     // Logic separator between children

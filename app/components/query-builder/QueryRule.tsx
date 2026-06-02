@@ -50,24 +50,24 @@ function ValueInput({
       : ["", ""];
     const isDate = rule.operator === "date_between";
     return (
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 w-full">
         <input
           type={isDate ? "date" : "number"}
           value={vals[0] ?? ""}
           onChange={(e) =>
             updateRule(rule.id, { value: [e.target.value, vals[1]] })
           }
-          className={`${inputClass} w-28`}
+          className={`${inputClass} flex-1 min-w-0`}
           placeholder="from"
         />
-        <span className="text-[var(--text-tertiary)] text-xs">to</span>
+        <span className="text-[var(--text-tertiary)] text-xs flex-shrink-0">to</span>
         <input
           type={isDate ? "date" : "number"}
           value={vals[1] ?? ""}
           onChange={(e) =>
             updateRule(rule.id, { value: [vals[0], e.target.value] })
           }
-          className={`${inputClass} w-28`}
+          className={`${inputClass} flex-1 min-w-0`}
           placeholder="to"
         />
       </div>
@@ -88,7 +88,7 @@ function ValueInput({
               .filter(Boolean),
           })
         }
-        className={`${inputClass} w-48`}
+        className={`${inputClass} w-full`}
         placeholder="val1, val2, val3"
         title="Comma-separated values"
       />
@@ -100,7 +100,7 @@ function ValueInput({
       <select
         value={String(rule.value ?? "")}
         onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-        className={`${inputClass} w-36`}
+        className={`${inputClass} w-full`}
       >
         <option value="">Select...</option>
         {field.enumValues.map((v) => (
@@ -117,7 +117,7 @@ function ValueInput({
       <select
         value={String(rule.value ?? "")}
         onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-        className={`${inputClass} w-28`}
+        className={`${inputClass} w-full`}
       >
         <option value="">Select...</option>
         <option value="true">true</option>
@@ -132,7 +132,7 @@ function ValueInput({
         type="date"
         value={String(rule.value ?? "")}
         onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-        className={`${inputClass} w-36`}
+        className={`${inputClass} w-full`}
       />
     );
   }
@@ -147,7 +147,7 @@ function ValueInput({
             value: e.target.value === "" ? "" : Number(e.target.value),
           })
         }
-        className={`${inputClass} w-28`}
+        className={`${inputClass} w-full`}
         placeholder="0"
       />
     );
@@ -158,7 +158,7 @@ function ValueInput({
       type="text"
       value={String(rule.value ?? "")}
       onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-      className={`${inputClass} w-40`}
+      className={`${inputClass} w-full`}
       placeholder="value"
     />
   );
@@ -267,7 +267,7 @@ export const QueryRuleComponent = memo(function QueryRuleComponent({
       <select
         value={rule.field}
         onChange={handleFieldChange}
-        className={`${selectClass} w-full lg:max-w-[140px]`}
+        className={`${selectClass} w-full lg:w-[110px] flex-shrink-0`}
       >
         {fields.map((f) => (
           <option key={f.key} value={f.key}>
@@ -280,7 +280,7 @@ export const QueryRuleComponent = memo(function QueryRuleComponent({
       <select
         value={rule.operator}
         onChange={handleOperatorChange}
-        className={`${selectClass} w-full lg:max-w-[160px]`}
+        className={`${selectClass} w-full lg:w-[120px] flex-shrink-0`}
       >
         {availableOps.map((op) => (
           <option key={op} value={op}>
