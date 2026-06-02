@@ -3,8 +3,8 @@
 A production-grade, highly interactive visual query builder built with Next.js 16 (App Router), TypeScript, Zustand, and `@dnd-kit`.
 
 ## Links
-- **Live Deployed URL:** [To be added / Vercel domain]
-- **Demo Video:** [To be added / Loom link]
+- **Live Deployed URL:** (https://zeenote.netlify.app/)
+- **Demo Video:**(https://drive.google.com/file/d/1a8rrtM3ceHCOnodoJ4MWoXtzWl3tSj6s/view?usp=drive_link)
 
 ## Features
 
