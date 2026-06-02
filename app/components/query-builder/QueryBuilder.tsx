@@ -27,37 +27,6 @@ export function QueryBuilder() {
   // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'light') {
-      document.documentElement.style.setProperty('--bg-base', '#FDFCFC');
-      document.documentElement.style.setProperty('--bg-surface', '#ffffff');
-      document.documentElement.style.setProperty('--bg-elevated', '#E8E2E2');
-      document.documentElement.style.setProperty('--bg-overlay', '#d1caca');
-      document.documentElement.style.setProperty('--bg-input', '#FDFCFC');
-      document.documentElement.style.setProperty('--bg-hover', '#E8E2E2');
-      document.documentElement.style.setProperty('--text-primary', '#2A3356');
-      document.documentElement.style.setProperty('--text-secondary', '#43528a');
-      document.documentElement.style.setProperty('--text-tertiary', '#64709b');
-      document.documentElement.style.setProperty('--border-default', '#E8E2E2');
-      document.documentElement.style.setProperty('--border-subtle', '#FDFCFC');
-      document.documentElement.style.setProperty('--border-strong', '#d1caca');
-      document.documentElement.style.setProperty('--group-and-bg', 'rgba(42, 51, 86, 0.04)');
-      document.documentElement.style.setProperty('--group-or-bg', 'rgba(243, 91, 37, 0.04)');
-    } else {
-      document.documentElement.style.removeProperty('--bg-base');
-      document.documentElement.style.removeProperty('--bg-surface');
-      document.documentElement.style.removeProperty('--bg-elevated');
-      document.documentElement.style.removeProperty('--bg-overlay');
-      document.documentElement.style.removeProperty('--bg-input');
-      document.documentElement.style.removeProperty('--bg-hover');
-      document.documentElement.style.removeProperty('--text-primary');
-      document.documentElement.style.removeProperty('--text-secondary');
-      document.documentElement.style.removeProperty('--text-tertiary');
-      document.documentElement.style.removeProperty('--border-default');
-      document.documentElement.style.removeProperty('--border-subtle');
-      document.documentElement.style.removeProperty('--border-strong');
-      document.documentElement.style.removeProperty('--group-and-bg');
-      document.documentElement.style.removeProperty('--group-or-bg');
-    }
   }, [theme]);
 
   // Keyboard shortcuts
@@ -129,11 +98,11 @@ export function QueryBuilder() {
       <Toolbar />
 
       {/* Main layout */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left: Query builder */}
         <div
-          className="flex flex-col border-r overflow-hidden"
-          style={{ borderColor: 'var(--border-default)', width: '55%', minWidth: 400 }}
+          className="flex flex-col border-b lg:border-b-0 lg:border-r overflow-hidden"
+          style={{ borderColor: 'var(--border-default)' }}
         >
           <div
             className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0"
@@ -178,7 +147,7 @@ export function QueryBuilder() {
         </div>
 
         {/* Right: Preview + Results */}
-        <div className="flex flex-col flex-1 overflow-hidden" style={{ minWidth: 0 }}>
+        <div className="flex flex-col flex-1 overflow-hidden" style={{ minWidth: 0, minHeight: 0 }}>
           {/* Preview */}
           <div className="flex-1 overflow-hidden" style={{ minHeight: 200 }}>
             <QueryPreviewPanel />

@@ -155,7 +155,7 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
   root: INITIAL_ROOT,
   activeSchemaId: INITIAL_SCHEMA,
   previewMode: 'sql',
-  theme: 'dark',
+  theme: 'light',
   history: [{ root: deepClone(INITIAL_ROOT), schemaId: INITIAL_SCHEMA, timestamp: Date.now(), label: 'Initial' }],
   historyIndex: 0,
   savedQueries: [],
