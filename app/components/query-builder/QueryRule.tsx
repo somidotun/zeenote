@@ -1,14 +1,17 @@
-'use client';
-import { memo, useCallback } from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import type { QueryRule, SchemaField, Operator } from '../../types/query';
+"use client";
+import { memo, useCallback } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { QueryRule, SchemaField, Operator } from "../../types/query";
 import {
-  OPERATORS_BY_TYPE, OPERATOR_LABELS,
-  OPERATORS_WITH_NO_VALUE, OPERATORS_WITH_RANGE, OPERATORS_WITH_ARRAY
-} from '../../types/query';
-import { useQueryStore } from '../../store/queryStore';
-import { useShallow } from 'zustand/shallow';
+  OPERATORS_BY_TYPE,
+  OPERATOR_LABELS,
+  OPERATORS_WITH_NO_VALUE,
+  OPERATORS_WITH_RANGE,
+  OPERATORS_WITH_ARRAY,
+} from "../../types/query";
+import { useQueryStore } from "../../store/queryStore";
+import { useShallow } from "zustand/shallow";
 
 interface Props {
   rule: QueryRule;
@@ -17,8 +20,14 @@ interface Props {
   hasError?: boolean;
 }
 
-function ValueInput({ rule, field }: { rule: QueryRule; field: SchemaField | undefined }) {
-  const updateRule = useQueryStore(s => s.updateRule);
+function ValueInput({
+  rule,
+  field,
+}: {
+  rule: QueryRule;
+  field: SchemaField | undefined;
+}) {
+  const updateRule = useQueryStore((s) => s.updateRule);
 
   const inputClass = `
     bg-[var(--bg-input)] border border-[var(--border-default)] rounded-[var(--radius-md)]
@@ -28,26 +37,36 @@ function ValueInput({ rule, field }: { rule: QueryRule; field: SchemaField | und
   `;
 
   if (OPERATORS_WITH_NO_VALUE.includes(rule.operator)) {
-    return <span className="text-[var(--text-tertiary)] text-xs italic px-2">no value needed</span>;
+    return (
+      <span className="text-[var(--text-tertiary)] text-xs italic px-2">
+        no value needed
+      </span>
+    );
   }
 
   if (OPERATORS_WITH_RANGE.includes(rule.operator)) {
-    const vals = Array.isArray(rule.value) ? rule.value as [string, string] : ['', ''];
-    const isDate = rule.operator === 'date_between';
+    const vals = Array.isArray(rule.value)
+      ? (rule.value as [string, string])
+      : ["", ""];
+    const isDate = rule.operator === "date_between";
     return (
       <div className="flex items-center gap-1.5">
         <input
-          type={isDate ? 'date' : 'number'}
-          value={vals[0] ?? ''}
-          onChange={e => updateRule(rule.id, { value: [e.target.value, vals[1]] })}
+          type={isDate ? "date" : "number"}
+          value={vals[0] ?? ""}
+          onChange={(e) =>
+            updateRule(rule.id, { value: [e.target.value, vals[1]] })
+          }
           className={`${inputClass} w-28`}
           placeholder="from"
         />
         <span className="text-[var(--text-tertiary)] text-xs">to</span>
         <input
-          type={isDate ? 'date' : 'number'}
-          value={vals[1] ?? ''}
-          onChange={e => updateRule(rule.id, { value: [vals[0], e.target.value] })}
+          type={isDate ? "date" : "number"}
+          value={vals[1] ?? ""}
+          onChange={(e) =>
+            updateRule(rule.id, { value: [vals[0], e.target.value] })
+          }
           className={`${inputClass} w-28`}
           placeholder="to"
         />
@@ -56,12 +75,19 @@ function ValueInput({ rule, field }: { rule: QueryRule; field: SchemaField | und
   }
 
   if (OPERATORS_WITH_ARRAY.includes(rule.operator)) {
-    const vals = Array.isArray(rule.value) ? rule.value as string[] : [];
+    const vals = Array.isArray(rule.value) ? (rule.value as string[]) : [];
     return (
       <input
         type="text"
-        value={vals.join(', ')}
-        onChange={e => updateRule(rule.id, { value: e.target.value.split(',').map(v => v.trim()).filter(Boolean) })}
+        value={vals.join(", ")}
+        onChange={(e) =>
+          updateRule(rule.id, {
+            value: e.target.value
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean),
+          })
+        }
         className={`${inputClass} w-48`}
         placeholder="val1, val2, val3"
         title="Comma-separated values"
@@ -69,26 +95,28 @@ function ValueInput({ rule, field }: { rule: QueryRule; field: SchemaField | und
     );
   }
 
-  if (field?.type === 'enum' && field.enumValues) {
+  if (field?.type === "enum" && field.enumValues) {
     return (
       <select
-        value={String(rule.value ?? '')}
-        onChange={e => updateRule(rule.id, { value: e.target.value })}
+        value={String(rule.value ?? "")}
+        onChange={(e) => updateRule(rule.id, { value: e.target.value })}
         className={`${inputClass} w-36`}
       >
         <option value="">Select...</option>
-        {field.enumValues.map(v => (
-          <option key={v} value={v}>{v}</option>
+        {field.enumValues.map((v) => (
+          <option key={v} value={v}>
+            {v}
+          </option>
         ))}
       </select>
     );
   }
 
-  if (field?.type === 'boolean') {
+  if (field?.type === "boolean") {
     return (
       <select
-        value={String(rule.value ?? '')}
-        onChange={e => updateRule(rule.id, { value: e.target.value })}
+        value={String(rule.value ?? "")}
+        onChange={(e) => updateRule(rule.id, { value: e.target.value })}
         className={`${inputClass} w-28`}
       >
         <option value="">Select...</option>
@@ -98,23 +126,27 @@ function ValueInput({ rule, field }: { rule: QueryRule; field: SchemaField | und
     );
   }
 
-  if (field?.type === 'date') {
+  if (field?.type === "date") {
     return (
       <input
         type="date"
-        value={String(rule.value ?? '')}
-        onChange={e => updateRule(rule.id, { value: e.target.value })}
+        value={String(rule.value ?? "")}
+        onChange={(e) => updateRule(rule.id, { value: e.target.value })}
         className={`${inputClass} w-36`}
       />
     );
   }
 
-  if (field?.type === 'number') {
+  if (field?.type === "number") {
     return (
       <input
         type="number"
-        value={String(rule.value ?? '')}
-        onChange={e => updateRule(rule.id, { value: e.target.value === '' ? '' : Number(e.target.value) })}
+        value={String(rule.value ?? "")}
+        onChange={(e) =>
+          updateRule(rule.id, {
+            value: e.target.value === "" ? "" : Number(e.target.value),
+          })
+        }
         className={`${inputClass} w-28`}
         placeholder="0"
       />
@@ -124,27 +156,42 @@ function ValueInput({ rule, field }: { rule: QueryRule; field: SchemaField | und
   return (
     <input
       type="text"
-      value={String(rule.value ?? '')}
-      onChange={e => updateRule(rule.id, { value: e.target.value })}
+      value={String(rule.value ?? "")}
+      onChange={(e) => updateRule(rule.id, { value: e.target.value })}
       className={`${inputClass} w-40`}
       placeholder="value"
     />
   );
 }
 
-const DEPTH_COLORS = ['var(--depth-0)', 'var(--depth-1)', 'var(--depth-2)', 'var(--depth-3)', 'var(--depth-4)'];
+const DEPTH_COLORS = [
+  "var(--depth-0)",
+  "var(--depth-1)",
+  "var(--depth-2)",
+  "var(--depth-3)",
+  "var(--depth-4)",
+];
 
-export const QueryRuleComponent = memo(function QueryRuleComponent({ rule, fields, depth, hasError }: Props) {
+export const QueryRuleComponent = memo(function QueryRuleComponent({
+  rule,
+  fields,
+  depth,
+  hasError,
+}: Props) {
   const { updateRule, removeNode } = useQueryStore(
-    useShallow(s => ({
+    useShallow((s) => ({
       updateRule: s.updateRule,
       removeNode: s.removeNode,
-    }))
+    })),
   );
 
   const {
-    attributes, listeners, setNodeRef,
-    transform, transition, isDragging,
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
   } = useSortable({ id: rule.id });
 
   const style = {
@@ -153,17 +200,23 @@ export const QueryRuleComponent = memo(function QueryRuleComponent({ rule, field
     opacity: isDragging ? 0.3 : 1,
   };
 
-  const field = fields.find(f => f.key === rule.field);
+  const field = fields.find((f) => f.key === rule.field);
   const availableOps = field ? OPERATORS_BY_TYPE[field.type] : [];
   const depthColor = DEPTH_COLORS[Math.min(depth, DEPTH_COLORS.length - 1)];
 
-  const handleFieldChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateRule(rule.id, { field: e.target.value });
-  }, [rule.id, updateRule]);
+  const handleFieldChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      updateRule(rule.id, { field: e.target.value });
+    },
+    [rule.id, updateRule],
+  );
 
-  const handleOperatorChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateRule(rule.id, { operator: e.target.value as Operator });
-  }, [rule.id, updateRule]);
+  const handleOperatorChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      updateRule(rule.id, { operator: e.target.value as Operator });
+    },
+    [rule.id, updateRule],
+  );
 
   const selectClass = `
     bg-[var(--bg-input)] border border-[var(--border-default)] rounded-[var(--radius-md)]
@@ -177,11 +230,12 @@ export const QueryRuleComponent = memo(function QueryRuleComponent({ rule, field
       ref={setNodeRef}
       style={style}
       className={`
-        relative flex items-center gap-2 px-3 py-2 rounded-[var(--radius-md)]
+        relative flex flex-col md:flex-row items-center gap-2 px-3 py-2 rounded-[var(--radius-md)]
         border transition-all duration-150 group animate-fade-in
-        ${hasError
-          ? 'border-[var(--border-danger)] bg-red-950/20'
-          : 'border-[var(--border-subtle)] bg-[var(--bg-input)] hover:border-[var(--border-default)] hover:bg-[var(--bg-elevated)]'
+        ${
+          hasError
+            ? "border-[var(--border-danger)] bg-red-950/20"
+            : "border-[var(--border-subtle)] bg-[var(--bg-input)] hover:border-[var(--border-default)] hover:bg-[var(--bg-elevated)]"
         }
       `}
     >
@@ -200,26 +254,43 @@ export const QueryRuleComponent = memo(function QueryRuleComponent({ rule, field
         aria-label="Drag handle"
       >
         <svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor">
-          <circle cx="4" cy="4" r="1.5"/><circle cx="8" cy="4" r="1.5"/>
-          <circle cx="4" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/>
-          <circle cx="4" cy="12" r="1.5"/><circle cx="8" cy="12" r="1.5"/>
+          <circle cx="4" cy="4" r="1.5" />
+          <circle cx="8" cy="4" r="1.5" />
+          <circle cx="4" cy="8" r="1.5" />
+          <circle cx="8" cy="8" r="1.5" />
+          <circle cx="4" cy="12" r="1.5" />
+          <circle cx="8" cy="12" r="1.5" />
         </svg>
       </button>
 
       {/* Field selector */}
-      <select value={rule.field} onChange={handleFieldChange} className={`${selectClass} max-w-[140px]`}>
-        {fields.map(f => <option key={f.key} value={f.key}>{f.label}</option>)}
+      <select
+        value={rule.field}
+        onChange={handleFieldChange}
+        className={`${selectClass} w-full lg:max-w-[140px]`}
+      >
+        {fields.map((f) => (
+          <option key={f.key} value={f.key}>
+            {f.label}
+          </option>
+        ))}
       </select>
 
       {/* Operator selector */}
-      <select value={rule.operator} onChange={handleOperatorChange} className={`${selectClass} max-w-[160px]`}>
-        {availableOps.map(op => (
-          <option key={op} value={op}>{OPERATOR_LABELS[op]}</option>
+      <select
+        value={rule.operator}
+        onChange={handleOperatorChange}
+        className={`${selectClass} w-full lg:max-w-[160px]`}
+      >
+        {availableOps.map((op) => (
+          <option key={op} value={op}>
+            {OPERATOR_LABELS[op]}
+          </option>
         ))}
       </select>
 
       {/* Value input */}
-      <div className="flex-1 min-w-0">
+      <div className="w-full lg:flex-1 min-w-0">
         <ValueInput rule={rule} field={field} />
       </div>
 
@@ -235,7 +306,12 @@ export const QueryRuleComponent = memo(function QueryRuleComponent({ rule, field
         aria-label="Remove rule"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-          <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path
+            d="M1 1L11 11M11 1L1 11"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </button>
 

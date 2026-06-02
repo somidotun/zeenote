@@ -98,11 +98,11 @@ export function QueryBuilder() {
       <Toolbar />
 
       {/* Main layout */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left: Query builder */}
         <div
-          className="flex flex-col border-r overflow-hidden"
-          style={{ borderColor: 'var(--border-default)', width: '55%', minWidth: 400 }}
+          className="flex flex-col border-b lg:border-b-0 lg:border-r overflow-hidden"
+          style={{ borderColor: 'var(--border-default)' }}
         >
           <div
             className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0"
@@ -147,7 +147,7 @@ export function QueryBuilder() {
         </div>
 
         {/* Right: Preview + Results */}
-        <div className="flex flex-col flex-1 overflow-hidden" style={{ minWidth: 0 }}>
+        <div className="flex flex-col flex-1 overflow-hidden" style={{ minWidth: 0, minHeight: 0 }}>
           {/* Preview */}
           <div className="flex-1 overflow-hidden" style={{ minHeight: 200 }}>
             <QueryPreviewPanel />
