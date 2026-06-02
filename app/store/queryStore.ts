@@ -109,6 +109,53 @@ function reorderChildren(
   };
 }
 
+// Normalize/sanitize query node recursively
+function normalizeQueryNode(node: any, schemaId: string): QueryNode | null {
+  if (!node || typeof node !== 'object') {
+    return defaultGroup(schemaId, false);
+  }
+
+  const id = node.id || uuid();
+
+  // If node has fields indicative of a rule
+  const isRule = 'field' in node || 'operator' in node || node.type === 'rule';
+
+  if (isRule) {
+    const schema = SCHEMAS.find(s => s.id === schemaId);
+    const firstField = schema?.fields[0];
+    const firstOperator = firstField
+      ? (OPERATORS_BY_TYPE[firstField.type][0] as Operator)
+      : 'equals' as Operator;
+
+    return {
+      id,
+      type: 'rule',
+      field: node.field ?? firstField?.key ?? '',
+      operator: node.operator ?? firstOperator,
+      value: node.value !== undefined ? node.value : (OPERATORS_WITH_NO_VALUE.includes(node.operator || firstOperator) ? null : ''),
+    } as QueryRule;
+  } else {
+    // Treat as group
+    const childrenRaw = Array.isArray(node.children) ? node.children : [];
+    const children: QueryNode[] = [];
+    
+    for (const child of childrenRaw) {
+      const normalizedChild = normalizeQueryNode(child, schemaId);
+      if (normalizedChild) {
+        children.push(normalizedChild);
+      }
+    }
+
+    return {
+      id,
+      type: 'group',
+      logic: (node.logic === 'AND' || node.logic === 'OR') ? node.logic : 'AND',
+      children,
+      collapsed: typeof node.collapsed === 'boolean' ? node.collapsed : false,
+    } as QueryGroup;
+  }
+}
+
 // History entry
 interface HistoryEntry {
   root: QueryGroup;
@@ -122,6 +169,7 @@ interface QueryStore {
   activeSchemaId: string;
   previewMode: 'sql' | 'mongo' | 'graphql';
   theme: 'dark' | 'light';
+  previewCollapsed: boolean;
   history: HistoryEntry[];
   historyIndex: number;
   savedQueries: SavedQuery[];
@@ -138,6 +186,7 @@ interface QueryStore {
   reorderChildren: (groupId: string, oldIndex: number, newIndex: number) => void;
   resetQuery: () => void;
   setPreviewMode: (mode: 'sql' | 'mongo' | 'graphql') => void;
+  togglePreviewCollapsed: () => void;
   toggleTheme: () => void;
   undo: () => void;
   redo: () => void;
@@ -156,6 +205,7 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
   activeSchemaId: INITIAL_SCHEMA,
   previewMode: 'sql',
   theme: 'dark',
+  previewCollapsed: false,
   history: [{ root: deepClone(INITIAL_ROOT), schemaId: INITIAL_SCHEMA, timestamp: Date.now(), label: 'Initial' }],
   historyIndex: 0,
   savedQueries: [],
@@ -302,6 +352,8 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
 
   setPreviewMode: (mode) => set({ previewMode: mode }),
 
+  togglePreviewCollapsed: () => set(state => ({ previewCollapsed: !state.previewCollapsed })),
+
   toggleTheme: () => set(state => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
   undo: () => {
@@ -340,10 +392,11 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
     if (!saved) return;
     set(state => {
       const history = state.history.slice(0, state.historyIndex + 1);
+      const normalizedRoot = normalizeQueryNode(saved.root, saved.schemaId) as QueryGroup;
       return {
-        root: deepClone(saved.root),
+        root: normalizedRoot || deepClone(saved.root),
         activeSchemaId: saved.schemaId,
-        history: [...history, { root: deepClone(saved.root), schemaId: saved.schemaId, timestamp: Date.now(), label: `Load: ${saved.name}` }],
+        history: [...history, { root: normalizedRoot ? deepClone(normalizedRoot) : deepClone(saved.root), schemaId: saved.schemaId, timestamp: Date.now(), label: `Load: ${saved.name}` }],
         historyIndex: history.length,
         validationErrors: [],
       };
@@ -366,12 +419,20 @@ export const useQueryStore = create<QueryStore>((set, get) => ({
         'JSON must have a "root" and "schemaId" field. Export a query first to get the correct format.'
       );
     }
+    
+    const activeSchemaId = parsed.schemaId as string;
+    const normalizedRoot = normalizeQueryNode(parsed.root, activeSchemaId) as QueryGroup;
+    
+    if (!normalizedRoot) {
+      throw new Error('Could not parse or normalize root query group.');
+    }
+
     set(state => {
       const history = state.history.slice(0, state.historyIndex + 1);
       return {
-        root: parsed.root as QueryGroup,
-        activeSchemaId: parsed.schemaId as string,
-        history: [...history, { root: deepClone(parsed.root as QueryGroup), schemaId: parsed.schemaId as string, timestamp: Date.now(), label: 'Import' }],
+        root: normalizedRoot,
+        activeSchemaId,
+        history: [...history, { root: deepClone(normalizedRoot), schemaId: activeSchemaId, timestamp: Date.now(), label: 'Import' }],
         historyIndex: history.length,
       };
     });

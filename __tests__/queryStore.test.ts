@@ -80,4 +80,70 @@ describe('queryStore', () => {
     useQueryStore.getState().redo();
     expect(useQueryStore.getState().root.logic).toBe('OR');
   });
+
+  describe('importQuery', () => {
+    it('can import a valid query JSON', () => {
+      const validQuery = {
+        schemaId: 'products',
+        root: {
+          id: 'test-group-id',
+          type: 'group',
+          logic: 'OR',
+          children: [
+            {
+              id: 'test-rule-id',
+              type: 'rule',
+              field: 'price',
+              operator: 'greater_than',
+              value: 100
+            }
+          ],
+          collapsed: false
+        }
+      };
+
+      useQueryStore.getState().importQuery(JSON.stringify(validQuery));
+      
+      const state = useQueryStore.getState();
+      expect(state.activeSchemaId).toBe('products');
+      expect(state.root.id).toBe('test-group-id');
+      expect(state.root.logic).toBe('OR');
+      expect(state.root.children.length).toBe(1);
+      expect(state.root.children[0].type).toBe('rule');
+      // @ts-ignore
+      expect(state.root.children[0].field).toBe('price');
+    });
+
+    it('throws an error for invalid JSON', () => {
+      expect(() => {
+        useQueryStore.getState().importQuery('invalid json');
+      }).toThrow('File is not valid JSON.');
+    });
+
+    it('throws an error if root or schemaId is missing', () => {
+      expect(() => {
+        useQueryStore.getState().importQuery(JSON.stringify({ schemaId: 'products' }));
+      }).toThrow('JSON must have a "root" and "schemaId" field.');
+    });
+
+    it('normalizes missing properties of an imported query root and its children', () => {
+      const partiallyValidQuery = {
+        schemaId: 'users',
+        root: {
+          // missing id, type, logic, children, collapsed
+        }
+      };
+
+      useQueryStore.getState().importQuery(JSON.stringify(partiallyValidQuery));
+
+      const state = useQueryStore.getState();
+      expect(state.activeSchemaId).toBe('users');
+      expect(state.root.id).toBeDefined();
+      expect(state.root.type).toBe('group');
+      expect(state.root.logic).toBe('AND');
+      expect(state.root.children).toBeDefined();
+      expect(state.root.children.length).toBe(0);
+      expect(state.root.collapsed).toBe(false);
+    });
+  });
 });

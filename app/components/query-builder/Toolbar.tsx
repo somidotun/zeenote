@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQueryStore } from '../../store/queryStore';
 import { useShallow } from 'zustand/shallow';
 import { SCHEMAS } from '../../lib/schemas';
@@ -11,6 +11,7 @@ export function Toolbar() {
     resetQuery,
     savedQueries, saveQuery, loadSavedQuery, deleteSavedQuery,
     root,
+    importQuery,
     theme, toggleTheme,
   } = useQueryStore(
     useShallow(s => ({
@@ -25,6 +26,7 @@ export function Toolbar() {
       loadSavedQuery: s.loadSavedQuery,
       deleteSavedQuery: s.deleteSavedQuery,
       root: s.root,
+      importQuery: s.importQuery,
       theme: s.theme,
       toggleTheme: s.toggleTheme,
     }))
@@ -34,6 +36,25 @@ export function Toolbar() {
   const [showHistory, setShowHistory] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [showSaveInput, setShowSaveInput] = useState(false);
+  const [importError, setImportError] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        importQuery(ev.target?.result as string);
+        setImportError('');
+      } catch (err: any) {
+        setImportError(err.message || 'Invalid JSON file');
+        setTimeout(() => setImportError(''), 4000);
+      }
+    };
+    reader.readAsText(file);
+    if (fileRef.current) fileRef.current.value = '';
+  };
 
   const handleSave = () => {
     if (!saveName.trim()) return;
@@ -235,7 +256,20 @@ export function Toolbar() {
         Export
       </button>
 
+      {/* Import */}
+      <button onClick={() => fileRef.current?.click()} className={btnDefault} title="Import query from JSON">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M6 8V1M3 4l3-3 3 3M1 10h10" strokeLinecap="round"/>
+        </svg>
+        Import
+      </button>
+      <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
 
+      {importError && (
+        <span className="text-xs text-[var(--color-danger)] font-medium animate-fade-in">
+          {importError}
+        </span>
+      )}
 
       <div className="flex-1" />
 
