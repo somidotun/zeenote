@@ -21,7 +21,7 @@ function highlightLines(code: string, mode: string): string[] {
     if (mode === 'sql') {
       return escaped
         .replace(/(SELECT|FROM|WHERE|AND|OR|IN|NOT|LIKE|IS|NULL|BETWEEN|REGEXP)/g,
-          '<span style="color:var(--color-primary-light);font-weight:600">$1</span>')
+          '<span style="color:var(--color-primary-light);font-weight:bold">$1</span>')
         .replace(/('[^']*')/g, '<span style="color:var(--color-success)">$1</span>')
         .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span style="color:var(--color-warning)">$1</span>');
     }
